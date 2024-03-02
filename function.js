@@ -2,7 +2,7 @@
 const cheerio = require("cheerio");
 // let puppeteerExtra = require("puppeteer-extra");
 // import puppeteerExtra from "puppeteer-extra";
-const stealthPlugin = require("puppeteer-extra-plugin-stealth");
+// const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 // import chromium from "@sparticuz/chromium";
 let chrome = {};
       chrome=require("chrome-aws-lambda");
