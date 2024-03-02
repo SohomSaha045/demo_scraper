@@ -1,56 +1,29 @@
-// import * as cheerio from "cheerio";
 const cheerio = require("cheerio");
-let puppeteerExtra = require("puppeteer");
-// import puppeteerExtra from "puppeteer-extra";
+let puppeteerExtra = require("puppeteer-extra");
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 require("dotenv").config();
-// import chromium from "@sparticuz/chromium";
 let chrome  =require("chrome-aws-lambda");
-// let puppeteerExtra=require("puppeteer-core");
 
 let options = {
-  args:[
-    "--disable-setuid-sandbox",
-    "--no-sandbox",
-    "--single-process",
-    "--no-zygote",
-  ],
+  
   headless: true,
-  // headless: "new",
-  // devtools: true,
-  executablePath:process.env.NODE_ENV==='production'? process.env.PUPPETEER_EXECUTABLE_PATH:puppeteerExtra.executablePath(), // your path here
+  
 };
 
 async function searchGoogleMaps() {
-  //  if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
-      //  chrome=require("chrome-aws-lambda");
-      //  puppeteerExtra=require("puppeteer-core");
-  //  }
+  
   try {
     const start = Date.now();
 
-    // puppeteerExtra.use(stealthPlugin());
-    // if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
-      // let options={
-      //   args: ('--no-sandbox'),
-      //   headless:true,
-      //   ignoreHTTPSErrors:true
-      // }
-    // }
+    
     const browser = await puppeteerExtra.launch(options);
 
-    // const browser = await puppeteerExtra.launch({
-    //   args: chromium.args,
-    //   defaultViewport: chromium.defaultViewport,
-    //   executablePath: await chromium.executablePath(),
-    //   headless: "new",
-    //   ignoreHTTPSErrors: true,
-    // });
+    
 
     const page = await browser.newPage();
 
     const query =
-      "Vascular Surgeon near latitude: 22.4848972 longitude:88.3653229";
+      "Cardiologist near me";
 
     try {
       await page.goto(
@@ -78,14 +51,11 @@ async function searchGoogleMaps() {
               totalHeight = 0;
               await new Promise((resolve) => setTimeout(resolve, scrollDelay));
 
-              // Calculate scrollHeight after waiting
               var scrollHeightAfter = wrapper.scrollHeight;
 
               if (scrollHeightAfter > scrollHeightBefore) {
-                // More content loaded, keep scrolling
                 return;
               } else {
-                // No more content loaded, stop scrolling
                 clearInterval(timer);
                 resolve();
               }
@@ -104,7 +74,6 @@ async function searchGoogleMaps() {
     await browser.close();
     console.log("browser closed");
 
-    // get all a tag parent where a tag href includes /maps/place/
     const $ = cheerio.load(html);
     const aTags = $("a");
     const parents = [];
@@ -124,16 +93,12 @@ async function searchGoogleMaps() {
 
     parents.forEach((parent) => {
       const url = parent.find("a").attr("href");
-      // get a tag where data-value="Website"
       const website = parent.find('a[data-value="Website"]').attr("href");
-      // find a div that includes the class fontHeadlineSmall
-      const storeName = parent.find("div.fontHeadlineSmall").text();
-      // find span that includes class fontBodyMedium
+      const doctorName = parent.find("div.fontHeadlineSmall").text();
       const ratingText = parent
         .find("span.fontBodyMedium > span")
         .attr("aria-label");
 
-      // get the first div that includes the class fontBodyMedium
       const bodyDiv = parent.find("div.fontBodyMedium").first();
       const children = bodyDiv.children();
       const lastChild = children.last();
@@ -141,13 +106,12 @@ async function searchGoogleMaps() {
       const lastOfLast = lastChild.children().last();
 
       buisnesses.push({
-        // placeId: `ChI${url?.split("?")?.[0]?.split("ChI")?.[1]}`,
         address: firstOfLast?.text()?.split("·")?.[1]?.trim(),
         category: firstOfLast?.text()?.split("·")?.[0]?.trim(),
         phone: lastOfLast?.text()?.split("·")?.[1]?.trim(),
         googleUrl: url,
-        bizWebsite: website,
-        storeName,
+        Website: website,
+        doctorName,
         ratingText,
         stars: ratingText?.split("stars")?.[0]?.trim()
           ? Number(ratingText?.split("stars")?.[0]?.trim())
