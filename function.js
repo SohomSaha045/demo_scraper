@@ -6,7 +6,7 @@ const cheerio = require("cheerio");
 // import chromium from "@sparticuz/chromium";
 let chrome = {};
       chrome=require("chrome-aws-lambda");
-       puppeteerExtra=require("puppeteer-core");
+let puppeteerExtra=require("puppeteer-core");
 
 // let options = {
 //   headless: true,
