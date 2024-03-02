@@ -163,7 +163,7 @@ async function searchGoogleMaps() {
     return buisnesses;
   } catch (error) {
     return {
-      status: "Something went wrong",
+      status: error,
     };
   }
 }
