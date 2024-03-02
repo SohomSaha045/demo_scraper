@@ -3,16 +3,22 @@ const cheerio = require("cheerio");
 let puppeteerExtra = require("puppeteer");
 // import puppeteerExtra from "puppeteer-extra";
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
+require("dotenv").config();
 // import chromium from "@sparticuz/chromium";
-let chrome = {};
-      chrome=require("chrome-aws-lambda");
+let chrome  =require("chrome-aws-lambda");
 // let puppeteerExtra=require("puppeteer-core");
 
 let options = {
+  args:[
+    "--disable-setuid-sandbox",
+    "--no-sandbox",
+    "--single-process",
+    "--no-zygote",
+  ],
   headless: true,
   // headless: "new",
   // devtools: true,
-  executablePath: "", // your path here
+  executablePath:process.env.NODE_ENV==='production'? process.env.PUPPETEER_EXECUTABLE_PATH:puppeteerExtra.executablePath(), // your path here
 };
 
 async function searchGoogleMaps() {
