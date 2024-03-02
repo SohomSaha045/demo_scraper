@@ -1,34 +1,37 @@
 // import * as cheerio from "cheerio";
 const cheerio = require("cheerio");
-let puppeteerExtra = require("puppeteer-extra");
+// let puppeteerExtra = require("puppeteer-extra");
 // import puppeteerExtra from "puppeteer-extra";
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 // import chromium from "@sparticuz/chromium";
 let chrome = {};
-let options = {
-  headless: true,
-  // headless: "new",
-  // devtools: true,
-  executablePath: "", // your path here
-};
+      chrome=require("chrome-aws-lambda");
+       puppeteerExtra=require("puppeteer-core");
+
+// let options = {
+//   headless: true,
+//   // headless: "new",
+//   // devtools: true,
+//   executablePath: "", // your path here
+// };
 
 async function searchGoogleMaps() {
   //  if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
-  //      chrome=require("chrome-aws-lambda");
-  //      puppeteerExtra=require("puppeteer-core")
+      //  chrome=require("chrome-aws-lambda");
+      //  puppeteerExtra=require("puppeteer-core");
   //  }
   try {
     const start = Date.now();
 
-    puppeteerExtra.use(stealthPlugin());
+    // puppeteerExtra.use(stealthPlugin());
     // if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
-    //   options={
-    //     args:[...chrome.args,"--hide-scrollbars","--disable-web-security"],
-    //     defaultViewport:chrome.defaultViewport,
-    //     executablePath:await chrome.executablePath,
-    //     headless:true,
-    //     ignoreHTTPSErrors:true
-    //   }
+      let options={
+        args:[...chrome.args,"--hide-scrollbars","--disable-web-security"],
+        defaultViewport:chrome.defaultViewport,
+        executablePath:await chrome.executablePath,
+        headless:true,
+        ignoreHTTPSErrors:true
+      }
     // }
     const browser = await puppeteerExtra.launch(options);
 
