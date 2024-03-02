@@ -1,35 +1,35 @@
 // import * as cheerio from "cheerio";
 const cheerio = require("cheerio");
-let puppeteerExtra=require("puppeteer-extra")
+let puppeteerExtra = require("puppeteer-extra");
 // import puppeteerExtra from "puppeteer-extra";
-const  stealthPlugin =require("puppeteer-extra-plugin-stealth");
+const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 // import chromium from "@sparticuz/chromium";
-let chrome ={}
-let options={
-  headless: false,
+let chrome = {};
+let options = {
+  headless: true,
   // headless: "new",
   // devtools: true,
   executablePath: "", // your path here
-}
+};
 
 async function searchGoogleMaps() {
-     if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
-         chrome=require("chrome-aws-lambda");
-         puppeteerExtra=require("puppeteer-core")
-     }
+  //  if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
+  //      chrome=require("chrome-aws-lambda");
+  //      puppeteerExtra=require("puppeteer-core")
+  //  }
   try {
     const start = Date.now();
 
     puppeteerExtra.use(stealthPlugin());
-    if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
-      options={
-        args:[...chrome.args,"--hide-scrollbars","--disable-web-security"],
-        defaultViewport:chrome.defaultViewport,
-        executablePath:await chrome.executablePath,
-        headless:true,
-        ignoreHTTPSErrors:true
-      }
-    }
+    // if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
+    //   options={
+    //     args:[...chrome.args,"--hide-scrollbars","--disable-web-security"],
+    //     defaultViewport:chrome.defaultViewport,
+    //     executablePath:await chrome.executablePath,
+    //     headless:true,
+    //     ignoreHTTPSErrors:true
+    //   }
+    // }
     const browser = await puppeteerExtra.launch(options);
 
     // const browser = await puppeteerExtra.launch({
@@ -42,7 +42,8 @@ async function searchGoogleMaps() {
 
     const page = await browser.newPage();
 
-    const query = "Vascular Surgeon near latitude: 22.4848972 longitude:88.3653229";
+    const query =
+      "Vascular Surgeon near latitude: 22.4848972 longitude:88.3653229";
 
     try {
       await page.goto(
@@ -93,7 +94,6 @@ async function searchGoogleMaps() {
     const pages = await browser.pages();
     await Promise.all(pages.map((page) => page.close()));
 
-
     await browser.close();
     console.log("browser closed");
 
@@ -134,7 +134,7 @@ async function searchGoogleMaps() {
       const lastOfLast = lastChild.children().last();
 
       buisnesses.push({
-        placeId: `ChI${url?.split("?")?.[0]?.split("ChI")?.[1]}`,
+        // placeId: `ChI${url?.split("?")?.[0]?.split("ChI")?.[1]}`,
         address: firstOfLast?.text()?.split("·")?.[1]?.trim(),
         category: firstOfLast?.text()?.split("·")?.[0]?.trim(),
         phone: lastOfLast?.text()?.split("·")?.[1]?.trim(),
@@ -155,13 +155,17 @@ async function searchGoogleMaps() {
           : null,
       });
     });
-     const end = Date.now();
+    const end = Date.now();
 
     console.log(`time in seconds ${Math.floor((end - start) / 1000)}`);
+    // console.log(bussinesses);
 
-    console.log(buisnesses);
+    return buisnesses;
   } catch (error) {
-    console.log("error at googleMaps", error.message);
+    return {
+      status: "Something went wrong",
+    };
   }
 }
-searchGoogleMaps();
+// searchGoogleMaps();
+module.exports = searchGoogleMaps;
