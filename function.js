@@ -26,9 +26,7 @@ async function searchGoogleMaps() {
     // puppeteerExtra.use(stealthPlugin());
     // if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
       let options={
-        args:[...chrome.args,"--hide-scrollbars","--disable-web-security"],
-        defaultViewport:chrome.defaultViewport,
-        executablePath:await chrome.executablePath,
+        args: ('--no-sandbox'),
         headless:true,
         ignoreHTTPSErrors:true
       }
