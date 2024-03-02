@@ -1,19 +1,19 @@
 // import * as cheerio from "cheerio";
 const cheerio = require("cheerio");
-// let puppeteerExtra = require("puppeteer-extra");
+let puppeteerExtra = require("puppeteer");
 // import puppeteerExtra from "puppeteer-extra";
-// const stealthPlugin = require("puppeteer-extra-plugin-stealth");
+const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 // import chromium from "@sparticuz/chromium";
 let chrome = {};
       chrome=require("chrome-aws-lambda");
-let puppeteerExtra=require("puppeteer-core");
+// let puppeteerExtra=require("puppeteer-core");
 
-// let options = {
-//   headless: true,
-//   // headless: "new",
-//   // devtools: true,
-//   executablePath: "", // your path here
-// };
+let options = {
+  headless: true,
+  // headless: "new",
+  // devtools: true,
+  executablePath: "", // your path here
+};
 
 async function searchGoogleMaps() {
   //  if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
@@ -25,11 +25,11 @@ async function searchGoogleMaps() {
 
     // puppeteerExtra.use(stealthPlugin());
     // if(process.env.AWS_LAMBDA_FUNCTION_VERSION){
-      let options={
-        args: ('--no-sandbox'),
-        headless:true,
-        ignoreHTTPSErrors:true
-      }
+      // let options={
+      //   args: ('--no-sandbox'),
+      //   headless:true,
+      //   ignoreHTTPSErrors:true
+      // }
     // }
     const browser = await puppeteerExtra.launch(options);
 
