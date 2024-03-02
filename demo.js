@@ -1,10 +1,23 @@
 // Import required modules
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium-min');
+const cheerio = require("cheerio");
+
 
 // Define the scraper function
 async function scrapeWebsite() {
     // Launch a headless browser
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch(
+        {
+            args: [...chromium.args, '--hide-scrollbars', '--disable-web-security'],
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(
+      `https://github.com/Sparticuz/chromium/releases/download/v116.0.0/chromium-v116.0.0-pack.tar`
+    ),
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
+        }
+    );
 
     // Create a new page
     const page = await browser.newPage();
@@ -13,16 +26,15 @@ async function scrapeWebsite() {
     await page.goto('https://google.com');
 
     // Extract desired information
-    const title = await page.title();
-    const url = page.url();
+    const $ = cheerio.load(html);
 
     // Close the browser
     await browser.close();
 
     // Return the scraped data
+    console.log($);
     return {
-        title: title,
-        url: url
+        "status":"success"
     };
 }
 
