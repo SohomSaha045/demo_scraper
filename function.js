@@ -2,28 +2,27 @@ const cheerio = require("cheerio");
 let puppeteerExtra = require("puppeteer-extra");
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 require("dotenv").config();
-let chrome  =require("chrome-aws-lambda");
+let chrome = require("chrome-aws-lambda");
 
 let options = {
-  
+
   headless: true,
-  
+
 };
 
-async function searchGoogleMaps() {
-  
+async function searchGoogleMaps(doctor, location) {
+
+  let query = `${doctor} near ${location}`
+
   try {
     const start = Date.now();
 
-    
+
     const browser = await puppeteerExtra.launch(options);
 
-    
+
 
     const page = await browser.newPage();
-
-    const query =
-      "Cardiologist near me";
 
     try {
       await page.goto(
@@ -121,8 +120,8 @@ async function searchGoogleMaps() {
           ?.replace("Reviews", "")
           ?.trim()
           ? Number(
-              ratingText?.split("stars")?.[1]?.replace("Reviews", "")?.trim()
-            )
+            ratingText?.split("stars")?.[1]?.replace("Reviews", "")?.trim()
+          )
           : null,
       });
     });
